@@ -1,0 +1,7 @@
+<h2>Inspiration:</h2>
+<p> {{ inspiration.input_text }}</p>
+<h2>Poem: </h2>
+ {% for line in poem_lines %}
+    {{ line }}
+        <br>
+{% endfor %}

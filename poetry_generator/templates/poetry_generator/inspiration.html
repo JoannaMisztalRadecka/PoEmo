@@ -1,0 +1,5 @@
+ <h1>Input inspiration</h1>
+    <form method="POST" class="inspiration-form">{% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="save btn btn-default">Make poem</button>
+    </form>

@@ -1,0 +1,9 @@
+{% if inspiration_list %}
+    <ul>
+    {% for inspiration in inspiration_list %}
+        <li><a href="{% url 'poetry_generator:detail' inspiration.id %}">{{ inspiration.input_text }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No inspirations are available.</p>
+{% endif %}

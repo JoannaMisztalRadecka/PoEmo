@@ -1,0 +1,6 @@
+ <h1>{{ inspiration.input_text }}</h1>
+<ul>
+{% for poem in inspiration.poem_set.all %}
+    <li>{{ poem.poem_text }}</li>
+{% endfor %}
+</ul>
