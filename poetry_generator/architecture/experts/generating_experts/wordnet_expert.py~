@@ -1,3 +1,5 @@
+from pattern.en import wordnet
+import en
 from nltk.corpus import wordnet as wn
 
 from poetry_generator.structures.word import Word
