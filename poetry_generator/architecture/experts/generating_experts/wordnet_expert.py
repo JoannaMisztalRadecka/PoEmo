@@ -64,7 +64,7 @@ class WordNetExpert(WordGeneratingExpert):
     def _find_antonyms(self, word, pool):
         antonyms = []
         try:
-            antonyms = set(Word(a.name, word.pos) for a in wn.synsets(word.name)[0].lemmas()[0].antonyms())
+            antonyms = set(Word(a.name(), word.pos) for a in wn.synsets(word.name)[0].lemmas()[0].antonyms())
         except IndexError as e:
             pass
 
