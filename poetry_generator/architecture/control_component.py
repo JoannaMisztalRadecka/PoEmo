@@ -132,6 +132,7 @@ class ControlComponent(object):
     def make_poem(self):
         self._init_experts()
         self.keyword.get_keyphrases()
+        print self.blackboard.pool
         self._generate_pool()
         logging.info(self.blackboard.pool)
         poem = self.blackboard.pool.str_poem()

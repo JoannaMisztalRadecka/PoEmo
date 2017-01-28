@@ -26,12 +26,11 @@ class KeyWordsExpert(PoemMakingExpert, WordGeneratingExpert):
         pool.adjectives.update(set(Word(en.lemma(a[0].string)) for a in adjs))
 
         try:
-            np = search('NP', sent)[0]
-            pool.epithets.update({Word(en.singularize(w.string), "NN"): [Word(jj.string, "JJ") for jj in np if "JJ" in jj.tag] for w in np if "NN" in w.tag})
+            nps = search('NP', sent)
+            for np in nps:
+                pool.epithets.update({Word(en.singularize(w.string), "NN"): [Word(jj.string, "JJ") for jj in np if "JJ" in jj.tag] for w in np if "NN" in w.tag})
         except IndexError:
             pass
-
-
 
     def generate_phrase(self, pool):
         """Parse string phrase to list of words with tags """

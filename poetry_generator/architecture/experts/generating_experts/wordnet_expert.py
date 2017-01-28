@@ -21,8 +21,8 @@ class WordNetExpert(WordGeneratingExpert):
 
         if word.pos.startswith("N"):
             pool.nouns |= set(synonyms)
-        elif word.pos.startswith("V"):
-            pool.verbs |= synonyms
+        # elif word.pos.startswith("V"):
+        #     pool.verbs |= synonyms
         elif word.pos.startswith("JJ"):
             pool.adjectives |= synonyms
         return synonyms
@@ -38,8 +38,8 @@ class WordNetExpert(WordGeneratingExpert):
 
         if word.pos.startswith("N"):
             pool.nouns |= set(hyponyms)
-        elif word.pos.startswith("V"):
-            pool.verbs |= hyponyms
+        # elif word.pos.startswith("V"):
+        #     pool.verbs |= hyponyms
         elif word.pos.startswith("JJ"):
             pool.adjectives |= hyponyms
         return hyponyms
@@ -55,8 +55,8 @@ class WordNetExpert(WordGeneratingExpert):
 
         if word.pos.startswith("N"):
             pool.nouns |= set(hypernyms)
-        elif word.pos.startswith("V"):
-            pool.verbs |= hypernyms
+        # elif word.pos.startswith("V"):
+        #     pool.verbs |= hypernyms
         elif word.pos.startswith("JJ"):
             pool.adjectives |= hypernyms
         return hypernyms
@@ -70,8 +70,8 @@ class WordNetExpert(WordGeneratingExpert):
 
         if word.pos.startswith("N"):
             pool.nouns |= set(antonyms)
-        elif word.pos.startswith("V"):
-            pool.verbs |= antonyms
+        # elif word.pos.startswith("V"):
+        #     pool.verbs |= antonyms
         elif word.pos.startswith("JJ"):
             pool.adjectives |= antonyms
         return antonyms
