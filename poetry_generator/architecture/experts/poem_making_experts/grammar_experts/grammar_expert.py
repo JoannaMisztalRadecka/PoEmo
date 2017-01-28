@@ -1,4 +1,4 @@
-import en
+import pattern.en as en
 from random import choice
 
 from poetry_generator.architecture.experts.poem_making_experts.poem_making_expert import PoemMakingExpert
@@ -48,12 +48,12 @@ class GrammarExpert(PoemMakingExpert):
                 return phrase
         return phrase
 
-    def conjugate(self, verb, pers=3):
+    def conjugate(self, verb, pers='3'):
         try:
             if self.tense == "present":
-                return en.verb.present(verb, person=pers)
+                return en.conjugate(verb, tense=en.PRESENT_3RD_PERSON_SINGULAR)
             elif self.tense == "past":
-                return en.verb.past(verb, person=pers)
+                return en.conjugate(verb, tense=en.PAST_3RD_PERSON_SINGULAR)
         except:
             return verb
 

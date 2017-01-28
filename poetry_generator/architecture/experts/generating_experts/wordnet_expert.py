@@ -1,4 +1,6 @@
+from pattern.en import wordnet
 import en
+from nltk.corpus import wordnet as wn
 
 from poetry_generator.structures.word import Word
 from poetry_generator.architecture.experts.generating_experts.word_generating_expert import WordGeneratingExpert
@@ -13,73 +15,67 @@ class WordNetExpert(WordGeneratingExpert):
     def _find_synonyms(self, word, pool):
         synonyms = []
         try:
-            if word.pos.startswith("N"):
-                synonyms = [Word(w, "NN")
-                            for w in en.noun.senses(word.name)[0]]
-                pool.nouns |= set(synonyms)
-            elif word.pos.startswith("V"):
-                synonyms = set([Word(w, "V")
-                                for w in en.verb.senses(word.name)[0]])
-                pool.verbs |= synonyms
-            elif word.pos.startswith("JJ"):
-                synonyms = set([Word(w, "JJ")
-                                for w in en.adjective.senses(word.name)[0]])
-                pool.adjectives |= synonyms
+            synonyms = set(Word(w, word.pos)
+                            for w in wn.synsets(word.name)[0].lemma_names)
 
         except IndexError as e:
             pass
-            # print "Couldn't find synonyms {}".format(word)
+
+        if word.pos.startswith("N"):
+            pool.nouns |= set(synonyms)
+        elif word.pos.startswith("V"):
+            pool.verbs |= synonyms
+        elif word.pos.startswith("JJ"):
+            pool.adjectives |= synonyms
         return synonyms
 
     def _find_hyponym(self, word, pool):
+        hyponyms = []
         try:
-            if word.pos.startswith("N"):
-                pool.nouns |= set([Word(w, "NN")
-                                   for w in en.noun.hyponym(word.name)[0]])
-            elif word.pos.startswith("V"):
-                pool.verbs |= set([Word(w, "V")
-                                   for w in en.verb.hyponym(word.name)[0]])
-            elif word.pos.startswith("JJ"):
-                pool.adjectives |= set(
-                    [Word(w, "JJ") for w in en.adjective.hyponym(word.name)[0]])
+            hyponyms = set(Word(w.name().split('.')[0], word.pos)
+                            for w in wn.synsets(word.name)[0].hyponyms())
+
         except IndexError as e:
             pass
-            # print "Couldn't find hyponyms {}".format(word)
 
-    def _find_hypernym(self, word, pool):
+        if word.pos.startswith("N"):
+            pool.nouns |= set(hyponyms)
+        elif word.pos.startswith("V"):
+            pool.verbs |= hyponyms
+        elif word.pos.startswith("JJ"):
+            pool.adjectives |= hyponyms
+        return hyponyms
+
+    def _find_hypernyms(self, word, pool):
         hypernyms = []
         try:
-            if word.pos.startswith("N"):
-                h = en.noun.hypernym(word.name)
-                hypernyms = [Word(w, "NN") for w in h[0]]
-            elif word.pos.startswith("V"):
-                h = en.verb.hypernym(word.name)
-                hypernyms = [Word(w, "V") for w in h[0]]
-            elif word.pos.startswith("JJ"):
-                h = en.adjective.hypernym(word.name)
-                hypernyms = [Word(w, "JJ") for w in h[0]]
-            pool.hypernyms[word] = hypernyms
-        except IndexError as e:
-           pass
-            # print "Couldn't find hypernyms {}".format(word)
-        return hypernyms
+            hypernyms = set(Word(w.name.split('.')[0], word.pos)
+                            for w in wn.synsets(word.name)[0].hypernyms())
 
-    def _find_antonym(self, word, pool):
-        antonyms = []
-        try:
-            if word.pos.startswith("N"):
-                h = en.noun.antonym(word.name)
-                antonyms = [Word(w, "NN") for w in h[0]]
-            elif word.pos.startswith("V"):
-                h = en.verb.antonym(word.name)
-                antonyms = [Word(w, "V") for w in h[0]]
-            elif word.pos.startswith("JJ"):
-                h = en.adjective.antonym(word.name)
-                antonyms = [Word(w, "JJ") for w in h[0]]
-            pool.antonyms[word] = antonyms
         except IndexError as e:
             pass
-            # print "Couldn't find antonyms  {}".format(word)
+
+        if word.pos.startswith("N"):
+            pool.nouns |= set(hypernyms)
+        elif word.pos.startswith("V"):
+            pool.verbs |= hypernyms
+        elif word.pos.startswith("JJ"):
+            pool.adjectives |= hypernyms
+        return hypernyms
+
+    def _find_antonyms(self, word, pool):
+        antonyms = []
+        try:
+            antonyms = set(Word(a.name, word.pos) for a in wn.synsets(word.name)[0].lemmas[0].antonyms())
+        except IndexError as e:
+            pass
+
+        if word.pos.startswith("N"):
+            pool.nouns |= set(antonyms)
+        elif word.pos.startswith("V"):
+            pool.verbs |= antonyms
+        elif word.pos.startswith("JJ"):
+            pool.adjectives |= antonyms
         return antonyms
 
     def generate_words(self, pool):
@@ -88,12 +84,14 @@ class WordNetExpert(WordGeneratingExpert):
         words = set()
         words |= pool.nouns
         words |= pool.adjectives
+        nouns = set()
+        nouns |= pool.nouns
         for w in words:
             syns = self._find_synonyms(w, pool)
-            ants = self._find_antonym(w, pool)
+            ants = self._find_antonyms(w, pool)
             counter += len(syns)
             counter += len(ants)
-        for w in pool.nouns:
-            hyps = self._find_hypernym(w, pool)
+        for w in nouns:
+            hyps = self._find_hypernyms(w, pool)
             counter += len(hyps)
         return counter

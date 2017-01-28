@@ -100,7 +100,7 @@ class ControlComponent(object):
                             try:
                                 e.add_phrase(self.blackboard.pool)
                             except:
-                                logging.info("Warning - couldn't add phrase by expert: ", e.name)
+                                logging.info("Warning - couldn't add phrase by expert: {}".format(e.name))
                     logging.info(self.blackboard.pool.phrases_dict)
 
                     ### selection...###

@@ -1,6 +1,6 @@
 import os
 
-resources_dir = os.path.join('poetry_generator' , 'resources')
+resources_dir = os.path.join('poetry_generator', 'resources')
 template_dir = os.path.join(resources_dir, "templates", "template")
 text_dir = os.path.join(resources_dir, "texts", "text")
 test_texts_nr = 9

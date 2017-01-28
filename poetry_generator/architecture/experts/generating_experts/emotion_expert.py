@@ -3,7 +3,7 @@ import random
 from poetry_generator.utils.affect_utils import calculate_arousal, calculate_valence, get_emotion, get_emotion_distance,\
     make_wn_affect_tree, find_affect_synsets_for_emotion
 from poetry_generator.architecture.experts.generating_experts.word_generating_expert import *
-from poetry_generator.utils.knowledge import tokenize_sentences
+from poetry_generator.utils.utils import tokenize_sentences
 from poetry_generator.structures.word import Word
 from poetry_generator.architecture.experts.evaluation_experts.control_expert import ControlExpert
 

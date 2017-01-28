@@ -1,4 +1,4 @@
-import en
+import pattern.en as en
 from random import choice, randrange
 
 from poetry_generator.architecture.experts.poem_making_experts.poem_making_expert import PoemMakingExpert
@@ -28,4 +28,4 @@ class ConjunctionExpert(PoemMakingExpert):
         for i in range(random_length):
             word = choice(pool.nouns)
             selection.append(word)
-        return en.list.conjunction(selection)  # make enumeration
+        return en.quantify(selection)  # make enumeration

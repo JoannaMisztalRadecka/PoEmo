@@ -1,4 +1,5 @@
 import nltk
+import pattern.en as en
 
 # text = """The Buddha, the Godhead, resides quite as comfortably in the circuits of a digital
 # computer or the gears of a cycle transmission as he does at the top of a mountain

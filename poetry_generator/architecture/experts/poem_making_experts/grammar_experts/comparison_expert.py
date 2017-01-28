@@ -1,4 +1,4 @@
-import en
+import pattern.en as en
 from random import choice
 
 from nltk import parse_cfg, ChartParser
@@ -34,10 +34,10 @@ class ComparisonExpert(GrammarExpert):
             gr = parser.grammar()
             phrase = self.produce(gr, gr.start())
             noun = choice(list(pool.comparisons[adj]))
-            if en.noun.plural(noun.name) == noun.name:
+            if en.pluralize(noun.name) == noun.name:
                 article = "the"
             else:
-                article = en.noun.article(noun.name).split(" ")[0]
+                article = en.referenced(noun.name).split(" ")[0]
             replace_words = {'adj': adj, 'n': noun, 'det': article}
             for pos in replace_words:
                 while pos in phrase:
