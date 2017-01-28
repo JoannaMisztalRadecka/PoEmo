@@ -15,7 +15,7 @@ class CollocationExpert(WordGeneratingExpert):
             self).__init__(
             blackboard,
             "Collocation Expert")
-        tagged_words = nltk.corpus.brown.tagged_words(simplify_tags=True)
+        tagged_words = nltk.corpus.brown.tagged_words(tagset='universal')
         self.word_tag_pairs = nltk.bigrams(tagged_words)
 
     '''Finding verbs for noun '''

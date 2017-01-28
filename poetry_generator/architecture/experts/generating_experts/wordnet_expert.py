@@ -14,7 +14,7 @@ class WordNetExpert(WordGeneratingExpert):
         synonyms = []
         try:
             synonyms = set(Word(w, word.pos)
-                            for w in wn.synsets(word.name)[0].lemma_names)
+                            for w in wn.synsets(word.name)[0].lemma_names())
 
         except IndexError as e:
             pass
@@ -47,7 +47,7 @@ class WordNetExpert(WordGeneratingExpert):
     def _find_hypernyms(self, word, pool):
         hypernyms = []
         try:
-            hypernyms = set(Word(w.name.split('.')[0], word.pos)
+            hypernyms = set(Word(w.name().split('.')[0], word.pos)
                             for w in wn.synsets(word.name)[0].hypernyms())
 
         except IndexError as e:
@@ -64,7 +64,7 @@ class WordNetExpert(WordGeneratingExpert):
     def _find_antonyms(self, word, pool):
         antonyms = []
         try:
-            antonyms = set(Word(a.name, word.pos) for a in wn.synsets(word.name)[0].lemmas[0].antonyms())
+            antonyms = set(Word(a.name, word.pos) for a in wn.synsets(word.name)[0].lemmas()[0].antonyms())
         except IndexError as e:
             pass
 

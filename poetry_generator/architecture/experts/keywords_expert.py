@@ -60,14 +60,16 @@ class KeyWordsExpert(PoemMakingExpert, WordGeneratingExpert):
         pool.sentences = sents
 
     def get_keyphrases(self):
-        keyphrases = list(
-            set(get_keyphrases(self.blackboard.text)))
-        self.blackboard.keyphrases = keyphrases
+        # keyphrases = list(
+        #     set(get_keyphrases(self.blackboard.text)))
+        #
+        # self.blackboard.keyphrases = keyphrases
         self.blackboard.sentences = self._tokenize_sentences()
+
         # create space for generation from each keyphrase
-        kp = keyphrases[0]
-        pool_kp = PoolOfIdeas(kp, self.blackboard.syllables)
+        # kp = keyphrases[0]
+        pool_kp = PoolOfIdeas("", self.blackboard.syllables)
         pool_kp.sentences = self.blackboard.sentences
         self.blackboard.pool = pool_kp
-        for kp in self.blackboard.keyphrases:
+        for kp in self.blackboard.sentences:
             self.add_keywords(self.blackboard.pool, kp)

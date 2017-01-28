@@ -63,7 +63,7 @@ def get_terms(tree):
 
 
 def get_keyphrases(text):
-    toks = nltk.regexp_tokenize(text, sentence_re)
+    toks = nltk.word_tokenize(text)
     postoks = nltk.tag.pos_tag(toks)
     tree = chunker.parse(postoks)
     terms = [" ".join(phrase) for phrase in get_terms(tree)]
