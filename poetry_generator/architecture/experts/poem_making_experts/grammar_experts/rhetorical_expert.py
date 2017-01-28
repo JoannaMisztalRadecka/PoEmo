@@ -1,6 +1,6 @@
 from random import choice
 
-from nltk import parse_cfg, ChartParser
+from nltk import CFG, ChartParser
 
 from poetry_generator.architecture.experts.poem_making_experts.grammar_experts.grammar_expert import GrammarExpert
 from poetry_generator.structures.word import Word
@@ -17,7 +17,7 @@ class RhetoricalExpert(GrammarExpert):
             "Rhetorical Expert",
             tense,
             3)
-        self.grammar = parse_cfg("""
+        self.grammar = CFG.fromstring("""
             S -> WHAT BE Det NP | WHY BE Det N SO JJ
             NP -> JJ N | N
             JJ -> 'adj'

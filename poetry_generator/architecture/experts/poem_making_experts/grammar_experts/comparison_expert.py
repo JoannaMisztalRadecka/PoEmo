@@ -1,7 +1,8 @@
 import pattern.en as en
 from random import choice
 
-from nltk import parse_cfg, ChartParser
+from nltk import ChartParser
+from nltk import CFG
 
 from poetry_generator.structures.word import Word
 from poetry_generator.architecture.experts.poem_making_experts.grammar_experts.grammar_expert import GrammarExpert
@@ -18,7 +19,7 @@ class ComparisonExpert(GrammarExpert):
             blackboard=blackboard,
             name="Comparison Expert",
             importance=3)
-        self.grammar = parse_cfg("""
+        self.grammar = CFG.fromstring("""
             S -> AS JJ AS Det N | JJ LIKE Det N
             JJ -> 'adj'
             N -> 'n'

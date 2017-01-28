@@ -9,7 +9,7 @@ import poetry_generator.settings as settings
 pron_dict = cmudict.dict()
 # SentiWordNet
 #swn = SentiWordNetCorpusReader(swn_filename)
-wordnet_1_6 = WordNetCorpusReader(settings.wn_1_6_corpus_root)
+# wordnet_1_6 = WordNetCorpusReader(settings.wn_1_6_corpus_root, None)
 # wordnet dict for id search
 english_wordlist = list(w.lower() for w in nltk.corpus.words.words())
 with open(settings.anew_filename, 'r') as f:
@@ -24,14 +24,14 @@ web_text = nltk.Text(word.lower() for word in nltk.corpus.webtext.words())
 #    print 'Building word-context index...'
 #    word_context_index = ContextIndex(web_text.tokens, filter=lambda x:x.isalpha(), key=lambda s:s.lower())
 
-
-def pickle_wn_dict_id():
-    # wordnet dict for id search
-    n = lambda s: s.name.split(".", 1)[0]
-    syns = list(wordnet_1_6.all_synsets())
-    wn_id_dict = dict([(s.offset, n(s)) for s in syns])
-    with open('wn_id_dict.txt', 'wb') as handle:
-        pickle.dump(wn_id_dict, handle)
+#
+# def pickle_wn_dict_id():
+#     # wordnet dict for id search
+#     n = lambda s: s.name.split(".", 1)[0]
+#     syns = list(wordnet_1_6.all_synsets())
+#     wn_id_dict = dict([(s.offset, n(s)) for s in syns])
+#     with open('wn_id_dict.txt', 'wb') as handle:
+#         pickle.dump(wn_id_dict, handle)
 
 ''' Return words from text without stopwords'''
 

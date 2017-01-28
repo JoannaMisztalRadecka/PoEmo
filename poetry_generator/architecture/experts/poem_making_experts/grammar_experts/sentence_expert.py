@@ -1,6 +1,6 @@
 from random import choice
 
-from nltk import parse_cfg, ChartParser
+from nltk import CFG, ChartParser
 
 from poetry_generator.structures.word import Word
 from poetry_generator.architecture.experts.poem_making_experts.grammar_experts.grammar_expert import GrammarExpert
@@ -27,7 +27,7 @@ class SentenceExpert(GrammarExpert):
             en - emotional noun
             atv - attitude verb
         """
-        self.grammar = parse_cfg("""
+        self.grammar = CFG.fromstring("""
             S -> P | EP | Person ATV NP
             P -> NP VP
             EP -> Person EVA EJ | NP EVP Pron EJ | ENP VP

@@ -1,5 +1,6 @@
 from random import choice
-from nltk import parse_cfg, ChartParser
+from nltk import CFG, ChartParser
+
 
 from poetry_generator.structures.word import Word
 from poetry_generator.architecture.experts.poem_making_experts.grammar_experts.grammar_expert import GrammarExpert
@@ -17,7 +18,7 @@ class MetaphoreExpert(GrammarExpert):
             tense=tense,
             person=person,
             importance=2)
-        self.grammar = parse_cfg("""
+        self.grammar = CFG.fromstring("""
             S -> Person BE LIKE NP
             NP -> Det JJ N | Det N
             Person -> 'person'
