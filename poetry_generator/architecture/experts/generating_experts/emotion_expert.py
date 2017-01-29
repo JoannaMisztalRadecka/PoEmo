@@ -1,4 +1,6 @@
 import random
+import numpy as np
+from pattern.en import sentiment
 
 from poetry_generator.utils.affect_utils import calculate_arousal, calculate_valence, get_emotion, get_emotion_distance,\
     make_wn_affect_tree, find_affect_synsets_for_emotion
@@ -19,37 +21,45 @@ class EmotionExpert(WordGeneratingExpert, ControlExpert):
 
     def calculate_text_sentiment(self, text):
         # Sentiment calculation for each sentence
-        sentences = tokenize_sentences(text)
+        # sentences = tokenize_sentences(text)
        # print "Rating text sentiment..."
-        sentiments_valence = {s: calculate_valence(s) for s in sentences}
-        pos_sent = sum([s[0] for s in sentiments_valence.values()])
-        neg_sent = sum([s[1] for s in sentiments_valence.values()])
-        valence = (self.optimism_rate * pos_sent +
-                   (2 - self.optimism_rate) * neg_sent)
-        sentiments_arousal = {s: calculate_arousal(s) for s in sentences}
-        arousal = sum(sentiments_arousal.values()) / \
-            float(len(sentiments_arousal))
-        return ((valence, arousal))
+        p, s = sentiment(text)
+        print p,s
+        print "###############"
+        return (5 * p, 5 * s)
+        #
+        # sentiments_valence = {s: calculate_valence(s) for s in sentences}
+        # pos_sent = sum([s[0] for s in sentiments_valence.values()])
+        # neg_sent = sum([s[1] for s in sentiments_valence.values()])
+        # valence = (self.optimism_rate * pos_sent +
+        #            (2 - self.optimism_rate) * neg_sent)
+        # sentiments_arousal = {s: calculate_arousal(s) for s in sentences}
+        # arousal = sum(sentiments_arousal.values()) / \
+        #     float(len(sentiments_arousal))
+        # return ((valence, arousal))
 
     def calculate_phrase_sentiment(self, phrases):
         # print "Rating phrases sentiment..."
         valence_list = []
         arousal_list = []
         for p in phrases:
-            valence_list.append(calculate_valence(p))
-            arousal_list.append(calculate_arousal(p))
+            pol, subj = sentiment(p)
+            valence_list.append(5*pol)
+            arousal_list.append(5*subj)
         # list average
 
         def avg(list):
             return float(sum(list) / len(list))
 
-        pos_sent = avg([p[0] for p in valence_list])
-        neg_sent = avg([p[1] for p in valence_list])
-        valence = (self.optimism_rate * pos_sent +
-                   (2 - self.optimism_rate) * neg_sent)
-        arousal = avg(arousal_list)
-        # print "Valence: " + str(valence)
-        # print "arousal: " + str(arousal)
+        # pos_sent = avg([p[0] for p in valence_list])
+        # neg_sent = avg([p[1] for p in valence_list])
+        # valence = (self.optimism_rate * pos_sent +
+        #            (2 - self.optimism_rate) * neg_sent)
+        valence = np.mean(valence_list)
+        arousal = np.mean(arousal_list)
+
+        print "Valence: " + str(valence)
+        print "arousal: " + str(arousal)
         return ((valence, arousal))
 
     '''finding emotion for valence, arousal'''
