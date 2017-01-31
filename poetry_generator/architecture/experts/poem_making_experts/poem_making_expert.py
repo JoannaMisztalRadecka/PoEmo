@@ -17,7 +17,7 @@ class PoemMakingExpert(Expert):
         for i in range(self.importance):
             phrase = Phrase(self.generate_phrase(pool))
             # print phrase
-            if len(phrase.words) > 0:
+            if len(phrase.words) > 0 and phrase not in [p[0] for p in pool.phrases_dict]:
                 pool.phrases_dict.append((phrase, self))
 
     def generate_phrase(self, pool):

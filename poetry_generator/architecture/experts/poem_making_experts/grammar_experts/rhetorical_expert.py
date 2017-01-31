@@ -14,9 +14,7 @@ class RhetoricalExpert(GrammarExpert):
             RhetoricalExpert,
             self).__init__(
             blackboard,
-            "Rhetorical Expert",
-            tense,
-            3)
+            "Rhetorical Expert")
         self.grammar = CFG.fromstring("""
             S -> WHAT BE Det NP | WHY BE Det N SO JJ
             NP -> JJ N | N
@@ -30,12 +28,10 @@ class RhetoricalExpert(GrammarExpert):
             """)
 
     def generate_phrase(self, pool):
-        noun = choice(list(pool.nouns))
-        parser = ChartParser(self.grammar)
-        gr = parser.grammar()
-        phrase = self.produce(gr, gr.start())
+        super(RhetoricalExpert, self).generate_phrase(pool)
+        phrase = choice(self.productions)
         phrase.append("?")
-
+        noun = choice(pool.epithets.keys())
         try:
             adj = choice(pool.epithets[noun])
         except:

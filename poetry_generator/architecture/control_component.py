@@ -19,7 +19,7 @@ class ControlComponent(object):
         logging.basicConfig(level=logging.INFO)
         #text_nr = randint(0,8)
         text_file = text_dir + ".txt"
-        logging.info( "Making blackboard...")
+        logging.info("Making blackboard...")
         self.blackboard = Blackboard(input_text, [8, 8, 8, 8, 0, 8, 8, 8, 8])
         logging.info(self.blackboard.text)
 
@@ -40,9 +40,9 @@ class ControlComponent(object):
                 self.blackboard))
 
         # Poem making experts... ###
-        logging.info( "Poem making experts...")
+        logging.info("Poem making experts...")
         self.poem_making_experts = []
-        self.poem_making_experts.append(self.keyword)
+        # self.poem_making_experts.append(self.keyword)
         self.poem_making_experts.append(
             epithet_expert.EpithetExpert(
                 self.blackboard))
@@ -51,9 +51,7 @@ class ControlComponent(object):
                 self.blackboard))
         self.poem_making_experts.append(
             sentence_expert.SentenceExpert(
-                self.blackboard,
-                self.blackboard.tense,
-                self.blackboard.person))
+                self.blackboard))
         self.poem_making_experts.append(
             comparison_expert.ComparisonExpert(
                 self.blackboard))
@@ -61,12 +59,12 @@ class ControlComponent(object):
             exclamation_expert.ExclamationExpert(
                 self.blackboard))
        # self.poem_making_experts.append(NGramExpert.NGramExpert(self.blackboard))
-        self.poem_making_experts.append(
-            repetition_expert.RepetitionExpert(
-                self.blackboard))
-        self.poem_making_experts.append(
-            overflow_expert.OverflowExpert(
-                self.blackboard))
+       #  self.poem_making_experts.append(
+       #      repetition_expert.RepetitionExpert(
+       #          self.blackboard))
+        # self.poem_making_experts.append(
+        #     overflow_expert.OverflowExpert(
+        #         self.blackboard))
         self.poem_making_experts.append(
             rhetorical_expert.RhetoricalExpert(
                 self.blackboard))
@@ -83,6 +81,12 @@ class ControlComponent(object):
         self.rhymes = rhymes_expert.RhymesExpert(self.blackboard)
         self.emotion = emotion_expert.EmotionExpert(self.blackboard)
 
+        self.train_experts()
+
+    def train_experts(self):
+        for e in self.word_generating_experts:
+            e.train()
+
     def _generate_pool(self):
         # generate words... ###
         for wg_e in self.word_generating_experts:
@@ -90,18 +94,25 @@ class ControlComponent(object):
         logging.info(self.blackboard.pool)
 
         ### generating phrases... ###
+        logging.info("Making phrases...")
         if len(self.blackboard.pool.nouns) > 0:
-            for line in range(len(self.blackboard.syllables)):
-                if line > 0:
-                    ### making phrases ###
-                    logging.info("Making phrases for line " + str(line))
-                    for i in range(5):
-                        for e in self.poem_making_experts:
-                            try:
-                                e.add_phrase(self.blackboard.pool)
-                            except:
-                                logging.info("Warning - couldn't add phrase by expert: {}".format(e.name))
-                    logging.info(self.blackboard.pool.phrases_dict)
+            for i in range(50):
+                for e in self.poem_making_experts:
+                    # try:
+                    e.add_phrase(self.blackboard.pool)
+                    # except Exception as a:
+                    #     logging.info("Warning - couldn't add phrase by expert: {}".format(a))
+        logging.info(self.blackboard.pool.phrases_dict)
+
+        for line in range(len(self.blackboard.syllables)):
+            if line > 0:
+                ### making phrases ###
+                logging.info("Selecting line " + str(line))
+                poem_line = self.diversity.select_phrase(
+                    self.blackboard.pool.phrases_dict)
+                self.blackboard.pool.poem.append(poem_line)
+            elif line == 0:
+                self.blackboard.pool.poem.append([])
 
                     ### selection...###
 
@@ -116,23 +127,20 @@ class ControlComponent(object):
                     # self.emotion.select_phrases(self.blackboard.pool, line)
                     # logging.info("Emotion selection: "+str(len(self.blackboard.pool.phrases_dict)) )
                     # logging.info(self.blackboard.pool.phrases_dict)
-                    poem_line = self.diversity.select_phrase(
-                        self.blackboard.pool.phrases_dict)
-                    self.blackboard.pool.poem.append(poem_line)
+
 
                     ### cleaning... ###
-                    self.blackboard.pool.phrases = self.blackboard.pool.next_line  # overflow sentences
-                    self.blackboard.pool.next_line = []
-                    self.blackboard.pool.ngram_seed = []
-                    self.blackboard.pool.phrases_dict = []
+                    # self.blackboard.pool.phrases = self.blackboard.pool.next_line  # overflow sentences
+                    # self.blackboard.pool.next_line = []
+                    # self.blackboard.pool.ngram_seed = []
+                    # self.blackboard.pool.phrases_dict = []
 
-                elif line == 0:
-                    self.blackboard.pool.poem.append([])
+
 
     def make_poem(self):
         self._init_experts()
         self.keyword.get_keyphrases()
-        print self.blackboard.pool
+
         self._generate_pool()
         logging.info(self.blackboard.pool)
         poem = self.blackboard.pool.str_poem()

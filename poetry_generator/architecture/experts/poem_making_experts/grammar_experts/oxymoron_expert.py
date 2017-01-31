@@ -16,7 +16,7 @@ class OxymoronExpert(PoemMakingExpert):
             antonym = choice(list(pool.antonyms[word]))
             phrase = []
             phrase.append(word)
-            phrase.append(Word(choice(["and", "or", "but"])))
+            phrase.append(choice(["and", "or", "but"]))
             phrase.append(antonym)
             return phrase
         except:

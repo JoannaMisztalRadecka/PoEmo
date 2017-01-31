@@ -52,6 +52,7 @@ class PoolOfIdeas(object):
 
         s += "Emotion: " + str(self.emotion) + "\n"
         s += "Nouns: " + str(len(self.nouns)) + str(self.nouns) + "\n"
+
         s += "Adjectives: " + str(len(self.adjectives)) + \
             str(self.adjectives) + "\n"
         s += "Verbs: " + str(len(self.verbs)) + str(self.verbs) + "\n"

@@ -16,7 +16,10 @@ class ExclamationExpert(PoemMakingExpert):
             "Exclamation Expert")
 
     def generate_phrase(self, pool):
-        phrase = deepcopy(choice(pool.phrases_dict))[0].words
+        try:
+            phrase = deepcopy(choice(pool.phrases_dict))[0].words
+        except IndexError:
+            return
         if phrase[-1].name not in ["!", "?"]:
             phrase.append(Word("!"))
         return phrase

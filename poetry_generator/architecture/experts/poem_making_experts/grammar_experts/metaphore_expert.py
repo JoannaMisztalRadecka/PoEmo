@@ -15,8 +15,6 @@ class MetaphoreExpert(GrammarExpert):
             self).__init__(
             blackboard,
             "Metaphore Expert",
-            tense=tense,
-            person=person,
             importance=2)
         self.grammar = CFG.fromstring("""
             S -> Person BE LIKE NP
@@ -30,25 +28,27 @@ class MetaphoreExpert(GrammarExpert):
             """)
 
     def generate_phrase(self, pool):
-        parser = ChartParser(self.grammar)
-        gr = parser.grammar()
-        phrase = self.produce(gr, gr.start())
-        noun = choice(list(pool.nouns))
-        adj = choice(pool.epithets[noun])
+        super(MetaphoreExpert, self).generate_phrase(pool)
+        phrase = choice(self.productions)
+        try:
+            noun = choice([n for n in pool.nouns if len(pool.epithets[n]) > 0])
+            adj = choice(pool.epithets[noun])
+        except IndexError:
+            return
+
         replace_words = {
             'adj': adj,
             'n': noun,
             'be': self.conjugate(
-                "be",
-                self.person),
+                "be"),
             'person': self.persons[
-                self.person][0]}
+                self.tense][0]}
         for pos in replace_words:
             while pos in phrase:
-                try:
-                    phrase = self.replace_pos(pos, replace_words[pos], phrase)
-                except:
-                    return
+                # try:
+                phrase = self.replace_pos(pos, replace_words[pos], phrase)
+                # except:
+                #     return
         for w in phrase:
             if not isinstance(w, Word):
                 phrase[phrase.index(w)] = Word(w)

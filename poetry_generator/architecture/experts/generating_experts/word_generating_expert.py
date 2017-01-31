@@ -21,3 +21,6 @@ class WordGeneratingExpert(Expert):
         if size:
             pool.inspiration += size
         return size
+
+    def train(self):
+        pass

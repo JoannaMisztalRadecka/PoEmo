@@ -1,6 +1,7 @@
 from random import choice
 
-from nltk import CFG, ChartParser
+from nltk import CFG
+from nltk.parse.generate import generate
 
 from poetry_generator.structures.word import Word
 from poetry_generator.architecture.experts.poem_making_experts.grammar_experts.grammar_expert import GrammarExpert
@@ -9,15 +10,13 @@ from poetry_generator.architecture.experts.poem_making_experts.grammar_experts.g
 class SentenceExpert(GrammarExpert):
     """Expert generating sentences from defined CFG grammar"""
 
-    def __init__(self, blackboard, tense="present", person=1):
+    def __init__(self, blackboard):
         super(
             SentenceExpert,
             self).__init__(
             blackboard,
-            "Sentence Expert",
-            tense,
-            person,
-            5)
+            "Sentence Expert"
+            )
         self.eva = ["be", "look", "feel"]
         self.atv = ["like", "hate", "love", "know", "need", "see"]
 
@@ -53,9 +52,8 @@ class SentenceExpert(GrammarExpert):
     ''' Generate phrase according to grammar and lexical rules'''
 
     def generate_phrase(self, pool):
-        parser = ChartParser(self.grammar)
-        gr = parser.grammar()
-        phrase = self.produce(gr, gr.start())
+        super(SentenceExpert, self).generate_phrase(pool)
+        phrase = choice(self.productions)
         noun = choice(list(pool.nouns))
         try:
             replace_words = {
@@ -69,32 +67,31 @@ class SentenceExpert(GrammarExpert):
                 'atv': [
                     Word(
                         self.conjugate(
-                            v,
-                            self.person)) for v in self.atv],
+                            v)) for v in self.atv],
                 'eva': [
                     Word(
                         self.conjugate(
-                            v,
-                            self.person)) for v in self.eva],
+                            v)) for v in self.eva],
                 'ej': pool.emotional_adjectives,
                 'en': pool.emotional_nouns,
                 'erb': pool.emotional_adverbs,
                 'person': [
                     Word(
                         self.persons[
-                            self.person][0])],
+                            self.tense][0])],
                 'pron': [
                     Word(
                         self.persons[
-                            self.person][1])]}
-        except:
+                            self.tense][1])]}
+        except IndexError:
             return
         for pos in replace_words:
             while pos in phrase:
-                try:
-                    word = choice(replace_words[pos])
+                words = replace_words[pos]
+                if len(words) > 0:
+                    word = choice(words)
                     phrase = self.replace_pos(pos, word, phrase)
-                except:
+                else:
                     return
         for w in phrase:
             if not isinstance(w, Word):

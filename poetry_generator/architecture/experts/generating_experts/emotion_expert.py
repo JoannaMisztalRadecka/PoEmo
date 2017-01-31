@@ -44,17 +44,9 @@ class EmotionExpert(WordGeneratingExpert, ControlExpert):
         arousal_list = []
         for p in phrases:
             pol, subj = sentiment(p)
-            valence_list.append(5*pol)
-            arousal_list.append(5*subj)
-        # list average
+            valence_list.append(10 * pol)
+            arousal_list.append(10 * subj)
 
-        def avg(list):
-            return float(sum(list) / len(list))
-
-        # pos_sent = avg([p[0] for p in valence_list])
-        # neg_sent = avg([p[1] for p in valence_list])
-        # valence = (self.optimism_rate * pos_sent +
-        #            (2 - self.optimism_rate) * neg_sent)
         valence = np.mean(valence_list)
         arousal = np.mean(arousal_list)
 

@@ -1,9 +1,10 @@
-from copy import deepcopy
-
 import nltk
+import os
+import pickle
 
 from poetry_generator.structures.word import Word
 from poetry_generator.architecture.experts.generating_experts.word_generating_expert import WordGeneratingExpert
+from poetry_generator.settings import resources_dir
 
 
 class CollocationExpert(WordGeneratingExpert):
@@ -15,28 +16,42 @@ class CollocationExpert(WordGeneratingExpert):
             self).__init__(
             blackboard,
             "Collocation Expert")
-        tagged_words = nltk.corpus.brown.tagged_words(tagset='universal')
-        self.word_tag_pairs = nltk.bigrams(tagged_words)
+        self.word_tag_pairs = []
+
+    def train(self):
+        bigram_pickle_file = os.path.join(resources_dir, 'bigram.pickle')
+        try:
+            with open(bigram_pickle_file,'rb') as f:
+                self.word_tag_pairs = pickle.load(f)
+
+        except IOError:
+            tagged_words = nltk.corpus.brown.tagged_words(tagset='universal')
+            self.word_tag_pairs = list(nltk.bigrams(tagged_words))
+            with open(bigram_pickle_file,'w') as f:
+                pickle.dump(self.word_tag_pairs,f)
+
 
     '''Finding verbs for noun '''
 
     def _find_verbs(self, word):
-        verbs = list(nltk.FreqDist(b[0] for (a, b) in self.word_tag_pairs if a[
-                     0] == word.name and a[1] == 'N' and b[1].startswith('V')))
-        return verbs
+        word_bigrams = [(a[0], b[0]) for a, b in self.word_tag_pairs
+                                               if a[0] == word.name and a[1] == 'NOUN' and b[1] == 'VERB']
+        return self.__get_best_collocations(word, word_bigrams)
 
     '''Finding adjectives for noun'''
 
     def _find_epithets(self, word):
-        epithets = list(nltk.FreqDist(a[0] for (a, b) in self.word_tag_pairs if b[
-                        0] == word.name and b[1] == 'N' and a[1] == 'ADJ'))
+        word_bigrams = [(b[0], a[0]) for (a, b) in self.word_tag_pairs
+                        if b[0] == word.name and b[1] == 'NOUN' and a[1] == 'ADJ']
+        epithets = self.__get_best_collocations(word, word_bigrams)
         return epithets
 
     '''Finding nouns described by adjective'''
 
     def _find_comparisons(self, adjective):
-        comparisons = list(nltk.FreqDist(b[0] for (a, b) in self.word_tag_pairs if a[
-                           0] == adjective.name and b[1] == 'N' and a[1] == 'ADJ'))
+        word_bigrams = [(a[0], b[0]) for (a, b) in self.word_tag_pairs
+                        if a[0] == adjective.name and b[1] == 'NOUN' and a[1] == 'ADJ']
+        comparisons = self.__get_best_collocations(adjective, word_bigrams)
         return comparisons
 
     '''Adding epithets for noun to pool'''
@@ -61,18 +76,11 @@ class CollocationExpert(WordGeneratingExpert):
         pool.comparisons[adj] = comparisons
         return comparisons
 
-    def _find_collocations(self, word_collection):
-        finder = deepcopy(self.finder)
-        # w1 != word and w2!= word# or w1 in
-        # (stopwords.words('english')+string.punctuation) or w2 in
-        # (stopwords.words('english')+string.punctuation)) #filtering
-        # collocations with keywords
-        finder.apply_ngram_filter(
-            lambda w1, w2: w1 not in word_collection and w2 not in word_collection)
-        # filtering stopwords and punctuation
-        finder.apply_word_filter(lambda x: x in (stopwords.words('english')))
-        finder.apply_word_filter(lambda x: x in (string.punctuation))
-        return finder.nbest(max, 10)
+    def __get_best_collocations(self, word, word_bigrams, N=20):
+        words = nltk.ConditionalFreqDist(word_bigrams)[word.name]
+        best_bigrams = sorted(words.items(), key=lambda (k, v): v, reverse=True)[:N]
+
+        return dict(best_bigrams).keys()
 
     def generate_words(self, pool):
         super(CollocationExpert, self).generate_words(pool)
