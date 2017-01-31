@@ -16,8 +16,7 @@ class Blackboard(object):
         self.pool_of_ideas = {}
         self._pool = None
         self.pool = property(self.get_pool, self.set_pool)
-        self.tense = choice([en.PRESENT_1ST_PERSON_SINGULAR, en.PRESENT_2ND_PERSON_SINGULAR, en.PAST_3RD_PERSON_SINGULAR,
-                             en.PAST_1ST_PERSON_SINGULAR, en.PAST_2ND_PERSON_SINGULAR, en.PAST_3RD_PERSON_SINGULAR])
+        self.tense = choice(["1sg","2sg","3sg","1sgp","2sgp","3gp"])
         # self.tense = choice(["past", "present"])
         # self.person = randint(1, 3)
         # print "Tense: ", self.tense, " Person: ", self.person

@@ -16,11 +16,12 @@ class GrammarExpert(PoemMakingExpert):
         super(GrammarExpert, self).__init__(blackboard=blackboard, name=name, importance=importance)
         # self.person = self.blackboard.person
         self.tense = self.blackboard.tense
-        self.persons = {en.PRESENT_1ST_PERSON_SINGULAR: ["I", "me", "my"],
-                        en.PRESENT_2ND_PERSON_SINGULAR: ["you", "you", "your"],
-                        en.PRESENT_3RD_PERSON_SINGULAR: choice([["she", "her", "her"], ["he", "him", "his"]]),
-                         en.PAST_1ST_PERSON_SINGULAR: ["I", "me", "my"], en.PAST_2ND_PERSON_SINGULAR: ["you", "you", "your"],
-                       en.PAST_3RD_PERSON_SINGULAR: choice([["she", "her", "her"], ["he", "him", "his"]])}
+        self.persons = {"1sg": ["I", "me", "my"],
+                        "2sg": ["you", "you", "your"],
+                        "3sg": choice([["she", "her", "her"], ["he", "him", "his"]]),
+                         "1sgp": ["I", "me", "my"],
+                         "2sgp": ["you", "you", "your"],
+                       "3sgp": choice([["she", "her", "her"], ["he", "him", "his"]])}
         # self.persons = {1: ["I", "me", "my"], 2: ["you", "you", "your"], 4: [
         #     "he", "him", "his"], 3: ["she", "her", "her"]}
         self.eva = ["be", "seem", "look", "feel"]
