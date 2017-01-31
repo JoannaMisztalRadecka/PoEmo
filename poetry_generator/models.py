@@ -12,7 +12,7 @@ class Inspiration(models.Model):
 
 @python_2_unicode_compatible  # only if you need to support Python 2
 class Poem(models.Model):
-    poem_text = models.TextField(max_length=1000)
+    poem_text = models.TextField(max_length=10000)
     inspiration = models.ForeignKey(Inspiration, on_delete=models.CASCADE)
 
     def __str__(self):
