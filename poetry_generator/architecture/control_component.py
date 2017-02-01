@@ -98,10 +98,10 @@ class ControlComponent(object):
         if len(self.blackboard.pool.nouns) > 0:
             for i in range(50):
                 for e in self.poem_making_experts:
-                    # try:
-                    e.add_phrase(self.blackboard.pool)
-                    # except Exception as a:
-                    #     logging.info("Warning - couldn't add phrase by expert: {}".format(a))
+                    try:
+                        e.add_phrase(self.blackboard.pool)
+                    except Exception as a:
+                        logging.info("Warning - couldn't add phrase by expert: {}".format(a))
         logging.info(self.blackboard.pool.phrases_dict)
 
         for line in range(len(self.blackboard.syllables)):
