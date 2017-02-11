@@ -11,4 +11,4 @@ class InspirationForm(forms.ModelForm):
 
     class Meta:
         model = Inspiration
-        fields = ('input_text', )
+        fields = ('input_text', 'template')

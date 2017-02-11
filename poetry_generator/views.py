@@ -14,7 +14,7 @@ def make_poem(request):
         if form.is_valid():
             inspiration = form.save(commit=False)
             inspiration.save()
-            cc = ControlComponent(inspiration.input_text)
+            cc = ControlComponent(inspiration.input_text, inspiration.template)
             poem_text = cc.make_poem()
             poem = Poem(poem_text=unidecode(poem_text), inspiration=inspiration)
             poem.save()

@@ -1,4 +1,5 @@
 import logging
+import json
 
 from experts.poem_making_experts import exclamation_expert
 
@@ -9,18 +10,17 @@ from experts.poem_making_experts.grammar_experts import apostrophe_expert, compa
 from experts.poem_making_experts import overflow_expert, repetition_expert
 from experts.keywords_expert import KeyWordsExpert
 from poetry_generator.architecture.blackboard import Blackboard
-from poetry_generator.settings import text_dir
+
 
 
 class ControlComponent(object):
     """Control of experts priorities and actions, ending process"""
 
-    def __init__(self, input_text, blackboard=None):
+    def __init__(self, input_text, template):
         logging.basicConfig(level=logging.INFO)
-        #text_nr = randint(0,8)
-        text_file = text_dir + ".txt"
         logging.info("Making blackboard...")
-        self.blackboard = Blackboard(input_text, [8, 8, 8, 8, 0, 8, 8, 8, 8])
+        temp = [int(s) for s in json.loads(template)]
+        self.blackboard = Blackboard(input_text, temp)
         logging.info(self.blackboard.text)
 
     def _init_experts(self):
@@ -113,29 +113,6 @@ class ControlComponent(object):
                 self.blackboard.pool.poem.append(poem_line)
             else:
                 self.blackboard.pool.poem.append([' '])
-
-                    ### selection...###
-
-                    # self.rhymes.select_phrases(self.blackboard.pool, line)
-                    # logging.info("Rhymes selection: "+str(len(self.blackboard.pool.phrases_dict)) )
-                    # logging.info( self.blackboard.pool.phrases_dict)
-
-
-                    # logging.info("Syllables selection: "+str(len(self.blackboard.pool.phrases_dict) ))
-                    # logging.info(self.blackboard.pool.phrases_dict)
-
-                    # self.emotion.select_phrases(self.blackboard.pool, line)
-                    # logging.info("Emotion selection: "+str(len(self.blackboard.pool.phrases_dict)) )
-                    # logging.info(self.blackboard.pool.phrases_dict)
-
-
-                    ### cleaning... ###
-                    # self.blackboard.pool.phrases = self.blackboard.pool.next_line  # overflow sentences
-                    # self.blackboard.pool.next_line = []
-                    # self.blackboard.pool.ngram_seed = []
-                    # self.blackboard.pool.phrases_dict = []
-
-
 
     def make_poem(self):
         self._init_experts()
