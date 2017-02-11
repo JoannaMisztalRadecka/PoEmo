@@ -62,6 +62,6 @@ class GrammarExpert(PoemMakingExpert):
 
     ''' Generate phrase according to grammar and lexical rules'''
 
-    def generate_phrase(self, pool):
-        super(GrammarExpert, self).generate_phrase(pool)
+    def generate_phrase(self):
+        super(GrammarExpert, self).generate_phrase()
         self.productions = list(generate(self.grammar, start=self.grammar.start(), n=100))

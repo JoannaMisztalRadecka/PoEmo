@@ -1,7 +1,7 @@
 from random import choice
 
 from nltk import CFG
-from nltk.parse.generate import generate
+from pattern import en
 
 from poetry_generator.structures.word import Word
 from poetry_generator.architecture.experts.poem_making_experts.grammar_experts.grammar_expert import GrammarExpert
@@ -51,19 +51,19 @@ class SentenceExpert(GrammarExpert):
 
     ''' Generate phrase according to grammar and lexical rules'''
 
-    def generate_phrase(self, pool):
-        super(SentenceExpert, self).generate_phrase(pool)
+    def generate_phrase(self):
+        super(SentenceExpert, self).generate_phrase()
         phrase = choice(self.productions)
-        noun = choice(list(pool.nouns))
+        noun = choice(list(self.blackboard.pool.nouns))
         try:
             replace_words = {
                 'n': [noun],
                 'v': [
                     Word(
-                        self.conjugate(
-                            v.name)) for v in list(
-                        pool.verbs[noun])],
-                'adj': pool.epithets[noun],
+                        en.conjugate(
+                            v.name, tense=self.tense.replace("1", "3").replace("2", "3"))) for v in list(
+                        self.blackboard.pool.verbs[noun])],
+                'adj': self.blackboard.pool.epithets[noun],
                 'atv': [
                     Word(
                         self.conjugate(
@@ -72,9 +72,9 @@ class SentenceExpert(GrammarExpert):
                     Word(
                         self.conjugate(
                             v)) for v in self.eva],
-                'ej': pool.emotional_adjectives,
-                'en': pool.emotional_nouns,
-                'erb': pool.emotional_adverbs,
+                'ej': self.blackboard.pool.emotional_adjectives,
+                'en': self.blackboard.pool.emotional_nouns,
+                'erb': self.blackboard.pool.emotional_adverbs,
                 'person': [
                     Word(
                         self.persons[

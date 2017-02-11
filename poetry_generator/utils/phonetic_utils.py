@@ -274,7 +274,6 @@ class cmusyllables(object):
 
         #-----
         # Return the result
-
         return(LinSyllables)
 
     def SyllableCount(self, AszWord, AszMode='max', AlgFallBack=True):
@@ -286,22 +285,23 @@ class cmusyllables(object):
 
         LszWord = AszWord.lower()
 
-        if len(LszWord) == 0 or LszWord not in GzzCMUDict:
-            self.szMode = None
-            if len(LszWord) == 0 or not AlgFallBack:
-                if AszMode in ['min', 'max']:
-                    return(0)
-                elif AszMode in ['ave']:
-                    return(0.0)
-                elif AszMode in ['raw']:
-                    return([])
-            else:
-                LliSyllableList = list((self.NonCMUSyllableCount(LszWord),))
-                self.szMode = 'manual'
+        # if len(LszWord) == 0 or LszWord not in GzzCMUDict:
+        self.szMode = None
+        if len(LszWord) == 0 or not AlgFallBack:
+            if AszMode in ['min', 'max']:
+                return(0)
+            elif AszMode in ['ave']:
+                return(0.0)
+            elif AszMode in ['raw']:
+                return([])
         else:
-            # self.dcSyllableCount[LszWord]
-            LliSyllableList = SyllableCount(LszWord)
-            self.szMode = 'lookup'
+            LliSyllableList = list((self.NonCMUSyllableCount(LszWord),))
+            self.szMode = 'manual'
+        # else:
+        #     # self.dcSyllableCount[LszWord]
+        #     LliSyllableList = SyllableCount(LszWord)
+        #     print 'dict'
+        #     self.szMode = 'lookup'
 
         if LszMode == 'min':
             return(min(LliSyllableList))

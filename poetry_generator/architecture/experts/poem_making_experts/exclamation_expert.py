@@ -15,9 +15,9 @@ class ExclamationExpert(PoemMakingExpert):
             blackboard,
             "Exclamation Expert")
 
-    def generate_phrase(self, pool):
+    def generate_phrase(self):
         try:
-            phrase = deepcopy(choice(pool.phrases_dict))[0].words
+            phrase = deepcopy(choice(self.blackboard.pool.phrases_dict))[0].words
         except IndexError:
             return
         if phrase[-1].name not in ["!", "?"]:

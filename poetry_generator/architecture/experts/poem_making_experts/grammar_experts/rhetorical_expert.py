@@ -1,6 +1,6 @@
 from random import choice
-
-from nltk import CFG, ChartParser
+from pattern import en
+from nltk import CFG
 
 from poetry_generator.architecture.experts.poem_making_experts.grammar_experts.grammar_expert import GrammarExpert
 from poetry_generator.structures.word import Word
@@ -27,16 +27,16 @@ class RhetoricalExpert(GrammarExpert):
             WHY -> 'why'
             """)
 
-    def generate_phrase(self, pool):
-        super(RhetoricalExpert, self).generate_phrase(pool)
+    def generate_phrase(self):
+        super(RhetoricalExpert, self).generate_phrase()
         phrase = choice(self.productions)
         phrase.append("?")
-        noun = choice(pool.epithets.keys())
+        noun = choice(self.blackboard.pool.epithets.keys())
         try:
-            adj = choice(pool.epithets[noun])
+            adj = choice(self.blackboard.pool.epithets[noun])
         except:
             return
-        replace_words = {'adj': adj, 'n': noun, 'be': self.conjugate("be")}
+        replace_words = {'adj': adj, 'n': noun, 'be': en.conjugate("be", tense=self.tense.replace("1", "3").replace("2", "3"))}
         for pos in replace_words:
             while pos in phrase:
                 try:

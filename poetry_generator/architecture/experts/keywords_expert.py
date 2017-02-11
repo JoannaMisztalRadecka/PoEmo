@@ -17,24 +17,26 @@ class KeyWordsExpert(PoemMakingExpert, WordGeneratingExpert):
     def __init__(self, blackboard):
         super(KeyWordsExpert, self).__init__(blackboard, "Keywords Expert")
 
-    def add_keywords(self, pool, phrase):
+    def add_keywords(self, phrase):
 
         sent = en.Sentence(en.parse(phrase))
         nouns = search('NN', sent)
-        pool.nouns.update(set(Word(en.singularize(n[0].string)) for n in nouns))
+        self.blackboard.pool.nouns.update(set(Word(en.singularize(n[0].string)) for n in nouns))
         adjs = search('JJ', sent)
-        pool.adjectives.update(set(Word(en.lemma(a[0].string)) for a in adjs))
+        self.blackboard.pool.adjectives.update(set(Word(en.lemma(a[0].string)) for a in adjs))
 
         try:
             nps = search('NP', sent)
             for np in nps:
-                pool.epithets.update({Word(en.singularize(w.string), "NN"): [Word(jj.string, "JJ") for jj in np if "JJ" in jj.tag] for w in np if "NN" in w.tag})
+                self.blackboard.pool.epithets.update({Word(en.singularize(w.string), "NN"):
+                                                          [Word(jj.string, "JJ") for jj in np if "JJ" in jj.tag]
+                                                      for w in np if "NN" in w.tag})
         except IndexError:
             pass
 
-    def generate_phrase(self, pool):
+    def generate_phrase(self):
         """Parse string phrase to list of words with tags """
-        phrase = pool.title
+        phrase = self.blackboard.pool.title
         tokens = nltk.word_tokenize(phrase)
         pos_phrase = nltk.pos_tag(tokens)
         new_phrase = [Word(w[0], w[1]) for w in pos_phrase]
@@ -45,8 +47,8 @@ class KeyWordsExpert(PoemMakingExpert, WordGeneratingExpert):
         sentences = tokenizer.tokenize(self.blackboard.text)
         return sentences
 
-    def _get_phrase_sents(self, pool):
-        kp = self.generate_phrase(pool)
+    def _get_phrase_sents(self):
+        kp = self.generate_phrase()
         sents = []
         for s in self.blackboard.sentences:
             contains = True
@@ -56,7 +58,7 @@ class KeyWordsExpert(PoemMakingExpert, WordGeneratingExpert):
                     break
             if contains is True:
                 sents.append(s)
-        pool.sentences = sents
+        self.blackboard.pool.sentences = sents
 
     def get_keyphrases(self):
         # keyphrases = list(
@@ -71,4 +73,4 @@ class KeyWordsExpert(PoemMakingExpert, WordGeneratingExpert):
         pool_kp.sentences = self.blackboard.sentences
         self.blackboard.pool = pool_kp
         for kp in self.blackboard.sentences:
-            self.add_keywords(self.blackboard.pool, kp)
+            self.add_keywords(kp)

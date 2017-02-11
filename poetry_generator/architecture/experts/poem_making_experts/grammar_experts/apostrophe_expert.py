@@ -16,13 +16,13 @@ class ApostropheExpert(PoemMakingExpert):
             2)
         self.apostrophes = [Word("O"), Word("Oh")]
 
-    def generate_phrase(self, pool):
-        noun = choice(list(pool.nouns))
+    def generate_phrase(self):
+        noun = choice(list(self.blackboard.pool.nouns))
         apostrophe = choice(self.apostrophes)
         try:
-            hypernyms = pool.hypernyms[noun]
+            hypernyms = self.blackboard.pool.hypernyms[noun]
             hypernym = choice(hypernyms)
-            epithets = list(pool.epithets[noun])
+            epithets = list(self.blackboard.pool.epithets[noun])
             epithet = choice(epithets)
         except:
             return

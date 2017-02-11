@@ -10,9 +10,7 @@ from architecture.control_component import ControlComponent
 
 def make_poem(request):
      if request.method == 'POST':
-        # create a form instance and populate it with data from the request:
         form = InspirationForm(request.POST)
-        # check whether it's valid:
         if form.is_valid():
             inspiration = form.save(commit=False)
             inspiration.save()
@@ -43,10 +41,6 @@ def poem(request, poem_id):
 
 def index(request):
 
-    # cc = ControlComponent()
-    # poem_text = cc.make_poem()
-    # poem = Poem(poem_text=poem_text)
-    # poem.save()
     inspiration_list = Inspiration.objects.all()
     context = {
         'inspiration_list': inspiration_list,

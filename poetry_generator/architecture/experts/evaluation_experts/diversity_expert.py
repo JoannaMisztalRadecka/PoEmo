@@ -12,7 +12,6 @@ class DiversityExpert(Expert):
     """Selecting phrase from list of least common expert"""
 
     def select_phrase(self, pairs):
-        # print '----------------------', pairs
         min_fit = min([p[1].counter for p in pairs])
         winners = [w for w in pairs if w[1].counter == min_fit]
         winner = random.choice(winners)

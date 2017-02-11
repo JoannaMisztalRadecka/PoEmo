@@ -90,7 +90,7 @@ class ControlComponent(object):
     def _generate_pool(self):
         # generate words... ###
         for wg_e in self.word_generating_experts:
-            wg_e.generate_words(self.blackboard.pool)
+            wg_e.generate_words()
         logging.info(self.blackboard.pool)
 
         ### generating phrases... ###
@@ -99,20 +99,20 @@ class ControlComponent(object):
             for i in range(50):
                 for e in self.poem_making_experts:
                     try:
-                        e.add_phrase(self.blackboard.pool)
+                        e.add_phrase()
                     except Exception as a:
                         logging.info("Warning - couldn't add phrase by expert: {}".format(a))
         logging.info(self.blackboard.pool.phrases_dict)
 
         for line in range(len(self.blackboard.syllables)):
-            if line > 0:
+            if self.blackboard.syllables[line] > 0:
                 ### making phrases ###
                 logging.info("Selecting line " + str(line))
-                poem_line = self.diversity.select_phrase(
-                    self.blackboard.pool.phrases_dict)
+                poem_lines = self.syllables.select_phrases(line)
+                poem_line = self.diversity.select_phrase(poem_lines)
                 self.blackboard.pool.poem.append(poem_line)
-            elif line == 0:
-                self.blackboard.pool.poem.append([])
+            else:
+                self.blackboard.pool.poem.append([' '])
 
                     ### selection...###
 
@@ -120,7 +120,7 @@ class ControlComponent(object):
                     # logging.info("Rhymes selection: "+str(len(self.blackboard.pool.phrases_dict)) )
                     # logging.info( self.blackboard.pool.phrases_dict)
 
-                    # self.syllables.select_phrases(self.blackboard.pool, line)
+
                     # logging.info("Syllables selection: "+str(len(self.blackboard.pool.phrases_dict) ))
                     # logging.info(self.blackboard.pool.phrases_dict)
 

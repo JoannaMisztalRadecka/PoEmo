@@ -1,6 +1,7 @@
 import nltk
 import os
 import pickle
+from pattern import en
 
 from poetry_generator.structures.word import Word
 from poetry_generator.architecture.experts.generating_experts.word_generating_expert import WordGeneratingExpert
@@ -35,7 +36,8 @@ class CollocationExpert(WordGeneratingExpert):
 
     def _find_verbs(self, word):
         word_bigrams = [(a[0], b[0]) for a, b in self.word_tag_pairs
-                                               if a[0] == word.name and a[1] == 'NOUN' and b[1] == 'VERB']
+                                               if a[0] == word.name and a[1] == 'NOUN' and b[1] == 'VERB'
+                                               and en.conjugate(b[0], "inf") not in ('be', 'have')]
         return self.__get_best_collocations(word, word_bigrams)
 
     '''Finding adjectives for noun'''
@@ -56,42 +58,42 @@ class CollocationExpert(WordGeneratingExpert):
 
     '''Adding epithets for noun to pool'''
 
-    def _add_epithets(self, word, pool):
+    def _add_epithets(self, word):
         epithets = set([Word(w, "JJ") for w in self._find_epithets(word)])
-        if word not in pool.epithets:
-            pool.epithets[word] = []
-        pool.epithets[word] += list(epithets)
+        if word not in self.blackboard.pool.epithets:
+            self.blackboard.pool.epithets[word] = []
+        self.blackboard.pool.epithets[word] += list(epithets)
         return epithets
 
-    def _add_verbs(self, word, pool):
+    def _add_verbs(self, word):
         verbs = set([Word(w, "V") for w in self._find_verbs(word)])
-        pool.verbs[word] = list(verbs)
+        self.blackboard.pool.verbs[word] = list(verbs)
         return verbs
 
     '''Adding nouns for adjectives to pool'''
 
-    def _add_comparisons(self, adj, pool):
+    def _add_comparisons(self, adj):
 
         comparisons = set([Word(w, "N") for w in self._find_comparisons(adj)])
-        pool.comparisons[adj] = comparisons
+        self.blackboard.pool.comparisons[adj] = comparisons
         return comparisons
 
-    def __get_best_collocations(self, word, word_bigrams, N=20):
+    def __get_best_collocations(self, word, word_bigrams, n=20):
         words = nltk.ConditionalFreqDist(word_bigrams)[word.name]
-        best_bigrams = sorted(words.items(), key=lambda (k, v): v, reverse=True)[:N]
+        best_bigrams = sorted(words.items(), key=lambda (k, v): v, reverse=False)[:n]
 
         return dict(best_bigrams).keys()
 
-    def generate_words(self, pool):
-        super(CollocationExpert, self).generate_words(pool)
+    def generate_words(self):
+        super(CollocationExpert, self).generate_words()
         counter = 0
-        for w in pool.nouns:
-            eps = self._add_epithets(w, pool)
-            vs = self._add_verbs(w, pool)
+        for w in self.blackboard.pool.nouns:
+            eps = self._add_epithets(w)
+            vs = self._add_verbs(w)
             le = len(eps)
             lv = len(vs)
             counter += le + lv
-        for adj in pool.adjectives:
-            comps = self._add_comparisons(adj, pool)
+        for adj in self.blackboard.pool.adjectives:
+            comps = self._add_comparisons(adj)
             counter += len(comps)
         return counter

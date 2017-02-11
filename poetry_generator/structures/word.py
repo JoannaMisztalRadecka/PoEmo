@@ -12,9 +12,9 @@ class Word(object):
             self.name = name.lower()
         else:
             self.name = None
-        if name is not None:
-           # self.phonetics = self.check_phonetics(self.name)
-            self.syllables = count_word_syllables(self.name)
+        # if name is not None:
+        #    # self.phonetics = self.check_phonetics(self.name)
+        #     self.syllables = count_word_syllables(self.name)
         if pos is None:
             self.pos = pos_tag([self.name])[0][1]
         else:

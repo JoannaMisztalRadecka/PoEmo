@@ -27,12 +27,12 @@ class MetaphoreExpert(GrammarExpert):
             LIKE -> 'like'
             """)
 
-    def generate_phrase(self, pool):
-        super(MetaphoreExpert, self).generate_phrase(pool)
+    def generate_phrase(self):
+        super(MetaphoreExpert, self).generate_phrase()
         phrase = choice(self.productions)
         try:
-            noun = choice([n for n in pool.nouns if len(pool.epithets[n]) > 0])
-            adj = choice(pool.epithets[noun])
+            noun = choice([n for n in self.blackboard.pool.nouns if len(self.blackboard.pool.epithets[n]) > 0])
+            adj = choice(self.blackboard.pool.epithets[noun])
         except IndexError:
             return
 

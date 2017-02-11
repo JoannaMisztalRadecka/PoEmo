@@ -1,6 +1,7 @@
 from random import choice
 
 from poetry_generator.architecture.experts.expert import Expert
+from poetry_generator.utils.phonetic_utils import count_word_syllables
 
 
 class SyllablesExpert(Expert):
@@ -22,7 +23,6 @@ class SyllablesExpert(Expert):
         fitness = {}
         for c in candidates:
             fitness[c] = self.heuristics(target_syls, line, c)
-        min_fit = 0
         min_fit = min(fitness.values())
 
         winners = [w for w in fitness if fitness[w] is min_fit]
@@ -30,12 +30,8 @@ class SyllablesExpert(Expert):
 
     """Selecting best phrase from pool (number of syls evaluation)"""
 
-    def select_phrases(self, pool, line_nr):
-        target_syls = self.blackboard.syllables[line_nr]
+    def select_phrases(self, line_nr):
 
-        # Count syls in phrase
-        def count_syls(phrase):
-            return sum([w.syllables for w in phrase])
 
         # given an iterable of pairs return the key corresponding to the
         # greatest value
@@ -46,9 +42,9 @@ class SyllablesExpert(Expert):
 
         # count dif of phrases syls and target syls for line
         def evaluate_syls(phrase, target_syls):
-            return abs(target_syls - count_syls(phrase))
+            count_syls = sum([count_word_syllables(w.name) for w in phrase])
+            return abs(target_syls - count_syls)
 
-        phrases_eval = {i: evaluate_syls(pool.phrases_dict[i][0].words, self.blackboard.syllables[
-                                         line_nr]) for i in range(len(pool.phrases_dict))}
-        pool.phrases_dict = [pool.phrases_dict[i]
-                             for i in argmin(phrases_eval)]
+        phrases_eval = {i: evaluate_syls(self.blackboard.pool.phrases_dict[i][0].words, self.blackboard.syllables[line_nr])
+                        for i in range(len(self.blackboard.pool.phrases_dict))}
+        return [self.blackboard.pool.phrases_dict[i] for i in argmin(phrases_eval)]

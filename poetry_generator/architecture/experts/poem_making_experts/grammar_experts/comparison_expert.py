@@ -28,13 +28,13 @@ class ComparisonExpert(GrammarExpert):
             AS -> 'as'
             """)
 
-    def generate_phrase(self, pool):
+    def generate_phrase(self):
         try:
-            adj = choice(list(pool.adjectives))
+            adj = choice(list(self.blackboard.pool.adjectives))
             parser = ChartParser(self.grammar)
             gr = parser.grammar()
             phrase = self.produce(gr, gr.start())
-            noun = choice(list(pool.comparisons[adj]))
+            noun = choice(list(self.blackboard.pool.comparisons[adj]))
             if en.pluralize(noun.name) == noun.name:
                 article = "the"
             else:

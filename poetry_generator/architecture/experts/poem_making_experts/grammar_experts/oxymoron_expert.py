@@ -10,10 +10,10 @@ class OxymoronExpert(PoemMakingExpert):
     def __init__(self, blackboard):
         super(OxymoronExpert, self).__init__(blackboard, "Oxymoron Expert", 2)
 
-    def generate_phrase(self, pool):
+    def generate_phrase(self):
         try:
-            word = choice(list(pool.antonyms))
-            antonym = choice(list(pool.antonyms[word]))
+            word = choice(list(self.blackboard.pool.antonyms))
+            antonym = choice(list(self.blackboard.pool.antonyms[word]))
             phrase = []
             phrase.append(word)
             phrase.append(choice(["and", "or", "but"]))

@@ -21,11 +21,11 @@ class ConjunctionExpert(PoemMakingExpert):
 
     """make ennumeration from random nouns from list"""
 
-    def generate_phrase(self, pool):
+    def generate_phrase(self):
         random_length = randrange(self.min_words, self.max_words + 1)
         # filtered_words = [w for w in words if en.is_noun(w)] #filter nouns
         selection = []
         for i in range(random_length):
-            word = choice(pool.nouns)
+            word = choice(self.blackboard.pool.nouns)
             selection.append(word)
         return en.quantify(selection)  # make enumeration

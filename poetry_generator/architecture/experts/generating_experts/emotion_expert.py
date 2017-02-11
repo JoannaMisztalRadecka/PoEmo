@@ -56,8 +56,8 @@ class EmotionExpert(WordGeneratingExpert, ControlExpert):
 
     '''finding emotion for valence, arousal'''
 
-    def get_emotion(self, xxx_todo_changeme):
-        (valence, arousal) = xxx_todo_changeme
+    def get_emotion(self, val_arous):
+        (valence, arousal) = val_arous
         emotion = get_emotion(valence, arousal)
         # print "The emotional state is " + emotion
         return emotion
@@ -69,11 +69,11 @@ class EmotionExpert(WordGeneratingExpert, ControlExpert):
         # print affect_words
         return set(affect_words)
 
-    def find_emotional_words(self, pool):
+    def find_emotional_words(self):
         # try:
-        text_sentiment = self.calculate_phrase_sentiment(pool.sentences)
+        text_sentiment = self.calculate_phrase_sentiment(self.blackboard.pool.sentences)
         emotion = self.get_emotion(text_sentiment)
-        pool.emotion = emotion
+        self.blackboard.pool.emotion = emotion
         affect_knowledge = [Word(e)
                             for e in self.generate_affect_words(emotion)]
         return affect_knowledge
@@ -82,20 +82,20 @@ class EmotionExpert(WordGeneratingExpert, ControlExpert):
 
     '''Add words from knowledge to blackboard'''
 
-    def generate_words(self, pool):
-        if len(pool.nouns) == 0:
+    def generate_words(self):
+        if len(self.blackboard.pool.nouns) == 0:
             return 0
-        super(EmotionExpert, self).generate_words(pool)
+        super(EmotionExpert, self).generate_words()
         self.optimism_rate = random.uniform(0.7, 1.3)
         # print "Optimism rate is " + str(self.optimism_rate)
-        knowledge = self.find_emotional_words(pool)
+        knowledge = self.find_emotional_words()
         for e in knowledge:
             if e.pos.startswith("N"):
-                pool.emotional_nouns.append(e)
+                self.blackboard.pool.emotional_nouns.append(e)
             elif e.pos.startswith("J"):
-                pool.emotional_adjectives.append(e)
+                self.blackboard.pool.emotional_adjectives.append(e)
             elif e.pos.startswith("R"):
-                pool.emotional_adverbs.append(e)
+                self.blackboard.pool.emotional_adverbs.append(e)
         return len(knowledge)
 
     '''Controls if the emotional state of phrase is the same as poem'''
