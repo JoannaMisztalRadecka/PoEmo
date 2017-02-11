@@ -12,13 +12,13 @@ pron_dict = cmudict.dict()
 # wordnet_1_6 = WordNetCorpusReader(settings.wn_1_6_corpus_root, None)
 # wordnet dict for id search
 english_wordlist = list(w.lower() for w in nltk.corpus.words.words())
-with open(settings.anew_filename, 'r') as f:
-    anew_list = {
-        l.rstrip().split("\t")[0]: (
-            float(
-                l.rstrip().split("\t")[2]), float(
-                l.rstrip().split("\t")[4])) for l in f.readlines()[
-                    1:]}
+# with open(settings.anew_filename, 'r') as f:
+#     anew_list = {
+#         l.rstrip().split("\t")[0]: (
+#             float(
+#                 l.rstrip().split("\t")[2]), float(
+#                 l.rstrip().split("\t")[4])) for l in f.readlines()[
+#                     1:]}
 web_text = nltk.Text(word.lower() for word in nltk.corpus.webtext.words())
 # if '_word_context_index' not in web_text.__dict__:
 #    print 'Building word-context index...'
