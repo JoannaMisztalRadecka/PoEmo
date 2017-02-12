@@ -96,5 +96,8 @@ ENV/
 # Resources file
 resources/
 
+# settings
+poetry_generator/settings.py
+
 #db files
 *.sqlite3

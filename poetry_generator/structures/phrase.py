@@ -37,3 +37,14 @@ class Phrase(object):
 
     def __hash__(self):
         return str(self)
+
+    def __eq__(self, other):
+        if isinstance(other, Phrase):
+            return len([i for i, j in zip(self.words, other.words) if i == j]) == len(self.words)
+        return NotImplemented
+
+    def __ne__(self, other):
+        result = self.__eq__(other)
+        if result is NotImplemented:
+            return result
+        return not result
