@@ -29,27 +29,24 @@ class ComparisonExpert(GrammarExpert):
             """)
 
     def generate_phrase(self):
-        try:
-            adj = choice(list(self.blackboard.pool.adjectives))
-            parser = ChartParser(self.grammar)
-            gr = parser.grammar()
-            phrase = self.produce(gr, gr.start())
-            noun = choice(list(self.blackboard.pool.comparisons[adj]))
-            if en.pluralize(noun.name) == noun.name:
-                article = "the"
-            else:
-                article = en.referenced(noun.name).split(" ")[0]
-            replace_words = {'adj': adj, 'n': noun, 'det': article}
-            for pos in replace_words:
-                while pos in phrase:
-                    try:
-                        phrase = self.replace_pos(
-                            pos, replace_words[pos], phrase)
-                    except:
-                        return
-            for w in phrase:
-                if not isinstance(w, Word):
-                    phrase[phrase.index(w)] = Word(w)
-            return phrase
-        except:
-            return
+        adj = choice([a for a in self.blackboard.pool.comparisons if len(self.blackboard.pool.comparisons[a]) > 0])
+        parser = ChartParser(self.grammar)
+        gr = parser.grammar()
+        phrase = self.produce(gr, gr.start())
+        noun = choice(list(self.blackboard.pool.comparisons[adj]))
+        noun.name = en.singularize(noun.name)
+        article = en.referenced(noun.name).split(" ")[0]
+        replace_words = {'adj': adj, 'n': noun, 'det': article}
+
+        for pos in replace_words:
+            while pos in phrase:
+                try:
+                    phrase = self.replace_pos(
+                        pos, replace_words[pos], phrase)
+                except:
+                    return
+        for w in phrase:
+            if not isinstance(w, Word):
+                phrase[phrase.index(w)] = Word(w)
+        return phrase
+

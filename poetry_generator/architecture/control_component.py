@@ -102,7 +102,7 @@ class ControlComponent(object):
                         e.add_phrase()
                     except Exception as a:
                         logging.info("Warning - couldn't add phrase by expert: {}".format(a))
-        logging.info(self.blackboard.pool.phrases_dict)
+        # logging.info(self.blackboard.pool.phrases_dict)
 
         for line in range(len(self.blackboard.syllables)):
             if self.blackboard.syllables[line] > 0:

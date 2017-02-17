@@ -83,7 +83,7 @@ class SentenceExpert(GrammarExpert):
                     Word(
                         self.persons[
                             self.tense][1])]}
-        except IndexError:
+        except (IndexError, TypeError):
             return
         for pos in replace_words:
             while pos in phrase:

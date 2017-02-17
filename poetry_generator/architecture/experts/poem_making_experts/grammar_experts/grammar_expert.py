@@ -1,6 +1,7 @@
 import pattern.en as en
 from random import choice
 from nltk.parse.generate import generate
+from nltk.grammar import Nonterminal
 
 from poetry_generator.architecture.experts.poem_making_experts.poem_making_expert import PoemMakingExpert
 
@@ -38,13 +39,15 @@ class GrammarExpert(PoemMakingExpert):
     def produce(self, grammar, symbol):
         words = []
 
-        productions = grammar.productions(lhs=symbol)
+        productions = grammar.productions(symbol)
         production = choice(productions)
         for sym in production.rhs():
-            if isinstance(sym, str):
-                words.append(sym)
-            else:
+            if isinstance(sym, Nonterminal):
                 words.extend(self.produce(grammar, sym))
+
+            else:
+                words.append(sym)
+
         return words
 
     def replace_pos(self, pos, word, phrase):
