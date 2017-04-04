@@ -1,6 +1,6 @@
 import random
 import numpy as np
-from pattern.en import sentiment
+from pattern.en import sentiment, parse, Sentence, modality
 
 from poetry_generator.utils.affect_utils import calculate_arousal, calculate_valence, get_emotion, get_emotion_distance,\
     make_wn_affect_tree, find_affect_synsets_for_emotion
@@ -43,12 +43,15 @@ class EmotionExpert(WordGeneratingExpert, ControlExpert):
         valence_list = []
         arousal_list = []
         for p in phrases:
-            pol, subj = sentiment(p)
+            pol = sentiment(p)[0]
+            sent = parse(p, lemmata=True)
+            mod = modality(Sentence(sent))
+            print mod
             valence_list.append(10 * pol)
-            arousal_list.append(10 * subj)
+            arousal_list.append(5 * mod)
 
-        valence = np.mean(valence_list)
-        arousal = np.mean(arousal_list)
+        valence = max(valence_list)
+        arousal = max(arousal_list)
 
         print "Valence: " + str(valence)
         print "arousal: " + str(arousal)

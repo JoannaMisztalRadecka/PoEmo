@@ -32,7 +32,6 @@ class SyllablesExpert(Expert):
 
     def select_phrases(self, line_nr):
 
-
         # given an iterable of pairs return the key corresponding to the
         # greatest value
         def argmin(pairs):
