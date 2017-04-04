@@ -115,13 +115,17 @@ class ControlComponent(object):
                 self.blackboard.pool.poem.append([' '])
 
     def make_poem(self):
-        self._init_experts()
-        self.keyword.get_keyphrases()
+        try:
+            self._init_experts()
+            self.keyword.get_keyphrases()
 
-        self._generate_pool()
-        logging.info(self.blackboard.pool)
-        poem = self.blackboard.pool.str_poem()
-        logging.info(self.blackboard.pool.print_experts())
-        logging.info(poem)
+            self._generate_pool()
+            logging.info(self.blackboard.pool)
+            poem = self.blackboard.pool.str_poem()
+            logging.info(self.blackboard.pool.print_experts())
+            logging.info(poem)
 
-        return poem
+            return poem
+
+        except Exception:
+            return "Couldn't generate a poem from given inspiration..."
